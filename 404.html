@@ -1,0 +1,10 @@
+<!doctype html>
+<html lang="ms"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Lilybelle</title><meta name="robots" content="noindex">
+<script>
+  // Link produk baru (p/KOD.html) yang belum dijana: terus buka beg itu di laman utama
+  var m = location.pathname.match(/\/p\/([A-Za-z]{2}-\d{3,})(\.html)?$/);
+  location.replace('/lilybelle/' + (m ? '#' + m[1].toUpperCase() : ''));
+</script>
+</head><body style="font-family:system-ui;background:#EBE3F8;color:#2A2140;text-align:center;padding:60px 20px">
+<p>Membuka <a href="/lilybelle/" style="color:#7B55D3;font-weight:700">Lilybelle</a>…</p></body></html>

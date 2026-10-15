@@ -547,7 +547,7 @@ function openSheet(title, html, cls=''){
 }
 function closeSheet(){ ov.classList.remove('show'); setTimeout(() => ov.hidden = true, 200); document.body.style.overflow = ''; if (location.hash) history.replaceState(null,'',location.pathname+location.search); }
 const find = k => (DATA.items||[]).find(i => i.kod === k);
-const linkOf = x => (PREVIEW ? SITE : location.origin + location.pathname) + '#' + x.kod;
+const linkOf = x => SITE + 'p/' + x.kod + '.html';  // halaman kongsi: WhatsApp tunjuk gambar & harga beg
 
 function share(x){
   const url = linkOf(x), text = `${x.brand} ${x.details} — RM${rm(x.harga)}`;
