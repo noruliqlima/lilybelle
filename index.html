@@ -6,6 +6,8 @@
 <title>Lilybelle</title>
 <meta name="description" content="Handbag, bagpack, purse dan jam pilihan. Baru dan bundle, satu unit sahaja setiap satu. Tempah terus dan hantar resit melalui WhatsApp.">
 <meta name="theme-color" content="#F5F1FC">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data: blob: https://*.googleusercontent.com https://drive.google.com; connect-src https://script.google.com https://script.googleusercontent.com; object-src 'none'; base-uri 'none'; form-action 'none'">
+<meta name="referrer" content="strict-origin-when-cross-origin">
 <meta property="og:type" content="website">
 <meta property="og:title" content="Lilybelle · Beg & Jam Pilihan">
 <meta property="og:description" content="Stok baru setiap minggu. Satu unit sahaja setiap beg, cepat tempah!">
@@ -164,6 +166,10 @@ select.sort{height:40px;border-radius:var(--r-s);border:1px solid var(--line);ba
 .how h2{font-family:var(--display);font-weight:500;font-size:30px;margin-bottom:16px}
 :root[data-d="c"] .how h2{font-weight:800;font-size:26px}
 .steps{display:grid;gap:10px}
+.safe{margin-top:14px;border:1.5px solid #FE2C55;background:color-mix(in srgb,#FE2C55 6%,var(--paper));border-radius:var(--r-s);padding:14px 16px;font-size:13.5px;line-height:1.55;color:var(--ink)}
+.safe b.t{display:flex;align-items:center;gap:6px;color:#C81E45;font-size:14px;margin-bottom:6px}
+.safe ul{margin:0;padding-left:18px}.safe li{margin:2px 0}
+.safe.sm{font-size:12.5px;padding:10px 12px;margin-top:12px}
 @media(min-width:720px){.steps{grid-template-columns:repeat(4,1fr)}}
 .step{background:var(--paper);border-radius:var(--r-s);padding:16px;border:1px solid var(--line)}
 :root[data-d="b"] .step{background:transparent}
@@ -312,6 +318,11 @@ footer{padding-block:20px 110px;color:var(--ink3);font-size:12.5px;text-align:ce
       <div class="step"><i>03</i><b>Bayar</b><p>Pindahan ke akaun Maybank yang dipaparkan.</p></div>
       <div class="step"><i>04</i><b>Hantar resit</b><p>Melalui WhatsApp dalam masa 24 jam, kemudian kami pos.</p></div>
     </div>
+    <div class="safe" id="safe"><b class="t">🛡️ Lindungi diri anda daripada scammer</b><ul>
+      <li>Laman rasmi kami <b>hanya</b> di <b>noruliqlima.github.io/lilybelle</b>.</li>
+      <li>Bayar <b>hanya</b> ke akaun <b id="safeAcc">yang dipaparkan selepas anda tempah</b>. Kami tidak akan minta anda bayar ke akaun lain.</li>
+      <li>Kami <b>tidak akan sesekali</b> minta OTP, TAC, kata laluan bank atau suruh anda klik link untuk "sahkan bayaran".</li>
+      <li>Ragu-ragu? WhatsApp nombor rasmi kami di butang atas sebelum bayar.</li></ul></div>
   </section>
 </main>
 <footer>© <span id="yr"></span> <span id="fname"></span> · Stok dikemaskini secara automatik</footer>
@@ -375,7 +386,7 @@ function applySkin(d){
 
 async function load(){
   if (INLINE) { DATA = INLINE; render(); return; }
-  try { const r = await fetch(API + '?a=list&t=' + Date.now()); const d = await r.json(); if (!d.ok) throw 0; DATA = d; render(); openFromHash(); }
+  try { const r = await fetch(API + '?a=list&t=' + Date.now()); const d = await r.json(); if (!d.ok) throw 0; DATA = d; render(); openFromHash(); try { if (d.noAkaun) $('#safeAcc').textContent = d.bank + ' ' + d.noAkaun + ' (' + d.namaAkaun + ')'; } catch(e){} }
   catch(e){ $('#grid').innerHTML = '<p style="grid-column:1/-1;text-align:center;padding:40px;color:var(--ink2)">Tak dapat muat stok. Sila cuba semula atau WhatsApp kami.</p>'; }
 }
 
@@ -514,6 +525,7 @@ function showDone(o){
       <div class="lbl" style="margin-bottom:6px">Pindahkan ke</div>
       <div class="acc"><div><b>${esc(o.noAkaun)}</b><span>${esc(o.bank)} · ${esc(o.namaAkaun)}</span></div><button class="copy" id="cp">Salin</button></div>
       <div class="timer">Hantar resit dalam ${h} jam ${m} minit</div></div>
+    <div class="safe sm">🛡️ Pastikan nama akaun <b>${esc(o.namaAkaun)}</b>. Kami tidak akan minta OTP/TAC atau bayaran ke akaun lain.</div>
     <a class="btn wa" href="${esc(o.wa)}" target="_blank" rel="noopener">${ICON.wa}Hantar resit melalui WhatsApp</a>
     <button class="btn ghost" id="more">Lihat beg lain</button></div>`);
   $('#cp').onclick = async () => { try { await navigator.clipboard.writeText(o.noAkaun.replace(/\s/g,'')); toast('No. akaun disalin'); } catch(e){ toast(o.noAkaun); } };
