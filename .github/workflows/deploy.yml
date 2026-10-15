@@ -1,0 +1,45 @@
+name: Terbit Lilybelle
+
+on:
+  push:
+    branches: [main]
+  schedule:
+    - cron: '*/30 * * * *'   # kemas kini preview produk setiap 30 minit
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Sediakan fail laman
+        run: |
+          mkdir -p _site
+          cp index.html admin.html robots.txt og.jpg 404.html _site/
+      - name: Jana halaman kongsi setiap beg
+        env:
+          LB_API: https://script.google.com/macros/s/AKfycbwgpMyz8qWkFbWtS19gvF9IcviGVTgKMSJ4eUxU5AJ-lTdFg9UQSjapGrlKaMkExQHq/exec
+        run: |
+          pip install --quiet pillow
+          python3 tools/build_pages.py _site || echo "Langkau: API tidak dapat dicapai"
+      - uses: actions/configure-pages@v5
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: _site
+      - id: deployment
+        uses: actions/deploy-pages@v4
