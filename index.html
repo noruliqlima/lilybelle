@@ -215,6 +215,7 @@ select.sort{height:40px;border-radius:var(--r-s);border:1px solid var(--line);ba
 .ph img{width:100%;height:100%;object-fit:cover}
 .tag{position:absolute;top:10px;left:10px;font-size:10.5px;font-weight:800;letter-spacing:.08em;padding:4px 9px;border-radius:999px;background:color-mix(in srgb,var(--paper) 92%,transparent);color:var(--ink)}
 .tag.bundle{background:var(--gold);color:#fff}
+.tag.new{background:#FE2C55;color:#fff;border-radius:6px;letter-spacing:.1em;box-shadow:0 3px 8px -2px rgba(254,44,85,.55)}
 :root[data-d="b"] .tag{border-radius:0;font-weight:500;letter-spacing:.16em}
 .count{position:absolute;bottom:10px;left:10px;font-size:11px;font-weight:700;padding:3px 8px;border-radius:999px;background:rgba(20,14,16,.6);color:#fff}
 .held{position:absolute;inset:0;background:rgba(20,14,16,.48);display:grid;place-items:center}
@@ -314,6 +315,12 @@ footer{padding-block:20px 110px;color:var(--ink3);font-size:12.5px;text-align:ce
 .f input:focus,.f textarea:focus{border-color:var(--accent)}
 .f textarea{min-height:80px;resize:vertical}
 .opts{display:grid;gap:8px}
+.qrow{display:flex;align-items:center;justify-content:space-between;gap:12px;border:1px solid var(--line);border-radius:var(--r-s);padding:10px 12px;background:var(--bg)}
+.qrow b{display:block;font-size:14px;color:var(--ink)}.qrow span{font-size:12px;color:var(--ink3)}
+.qty{display:flex;align-items:center;border:1px solid var(--line);border-radius:999px;overflow:hidden;background:var(--paper)}
+.qty button{width:40px;height:40px;border:0;background:transparent;color:var(--accent);font-size:22px;font-weight:700;cursor:pointer}
+.qty button:disabled{color:var(--ink3);opacity:.5;cursor:default}
+.f .qty input{width:44px;text-align:center;border:0;background:transparent;padding:0;font-size:16px;font-weight:800;border-radius:0}
 .f label.opt{flex-direction:row;align-items:center;gap:10px;border:1px solid var(--line);border-radius:var(--r-s);padding:12px 13px;background:var(--bg);font-size:14px;color:var(--ink)}
 .opt input{accent-color:var(--accent);width:18px;height:18px}
 .opt:has(input:checked){border-color:var(--accent);box-shadow:0 0 0 1px var(--accent)}
@@ -514,7 +521,7 @@ function render(){
 function card(x){
   return `<article class="card" data-k="${esc(x.kod)}" tabindex="0" aria-label="${esc(x.brand)} ${esc(x.details)}">
     <div class="ph"><img loading="lazy" src="${esc(x.gambar[0])}" alt="${esc(x.brand)} ${esc(x.details)}">
-      ${x.jenis?`<span class="tag ${x.jenis==='BUNDLE'?'bundle':''}">${esc(x.jenis)}</span>`:''}
+      ${x.jenis?`<span class="tag ${x.jenis==='BUNDLE'?'bundle':'new'}">${x.jenis==='BARU'?'NEW':esc(x.jenis)}</span>`:''}
       ${x.gambar.length>1?`<span class="count" style="bottom:auto;top:42px">${x.gambar.length} gambar</span>`:''}
       ${sale(x) && x.status==='AVAILABLE'?`<span class="disc">-${sale(x)}%</span>`:''}
       ${x.status==='AVAILABLE' && (x.baru || sale(x)) ? `<div class="strip">${x.baru?'<span class="seg tq"><b>BARU TIBA</b><small>Stok minggu ini</small></span>':''}${sale(x)?`<span class="seg rd"><b>SALE</b><small>Jimat RM${rm(x.hargaAsal-x.harga)}</small></span>`:''}</div>` : ''}
@@ -523,7 +530,7 @@ function card(x){
       <span class="kod">${esc(x.kod)}</span>
       <span class="brand">${esc(x.brand)}</span>
       <span class="det">${esc(x.details)}</span>
-      ${x.status==='AVAILABLE'?'<span class="left1">🔥 Tinggal 1 unit</span>':''}
+      ${x.status==='AVAILABLE'?`<span class="left1">🔥 Tinggal ${x.qty>1?x.qty:1} unit</span>`:''}
       <div class="foot" style="flex-direction:column;align-items:stretch;gap:0">
         <div><span class="price ${sale(x)?'sale':''}"><small>RM</small>${rm(x.harga)}</span>${hargaAsal(x)}</div>
         ${x.lawatan>=5?`<span class="views">👀 ${x.lawatan} orang tengok</span>`:''}
@@ -574,7 +581,7 @@ function showItem(k){
     <div class="body"><div class="kod">${esc(x.kod)}</div><div class="brand">${esc(x.brand)}</div><div class="det">${esc(x.details)}</div>
     <div class="meta">${[CAT_LABEL[x.kategori]||x.kategori, x.jenis, x.baru?'Baru tiba':''].filter(Boolean).map(m=>`<span>${esc(m)}</span>`).join('')}</div>
     <div class="bigprice"><small style="font-size:.5em">RM</small>${rm(x.harga)}${hargaAsal(x).replace('class="was"','class="was" style="font-size:16px"')}${sale(x)?`<span class="off">-${sale(x)}%</span>`:''}</div>
-    ${!held?`<div class="left1" style="margin:-8px 0 14px">🔥 Tinggal 1 unit sahaja${x.lawatan>=5?' · '+x.lawatan+' orang dah tengok':''}</div>`:''}
+    ${!held?`<div class="left1" style="margin:-8px 0 14px">🔥 ${x.qty>1?'Tinggal '+x.qty+' unit':'Tinggal 1 unit sahaja'}${x.lawatan>=5?' · '+x.lawatan+' orang dah tengok':''}</div>`:''}
     ${held?'<button class="btn" disabled>Sudah ditempah</button>':'<button class="btn" id="go">Tempah sekarang</button>'}
     <button class="btn ghost" id="shr">${ICON.share}Kongsi beg ini</button>
     <p class="note">Beg dikunci untuk anda sebaik tempahan dihantar. Resit perlu dihantar dalam masa ${DATA.hadJam||24} jam.</p></div></div>`);
@@ -588,6 +595,7 @@ function showForm(x){
     <button class="back" id="back">‹ Kembali</button>
     <div class="mini"><img src="${esc(x.gambar[0])}" alt=""><div><b>${esc(x.brand)}</b><span>${esc(x.kod)} · ${esc(x.details)}</span><div class="price">RM${rm(x.harga)}</div></div></div>
     <form class="f" id="form" novalidate>
+      ${(x.qty||1)>1?`<div class="qrow"><div><b>Kuantiti</b><span>Stok ada ${x.qty} unit</span></div><div class="qty"><button type="button" id="qm" aria-label="Kurang">−</button><input id="f-qty" name="kuantiti" value="1" inputmode="numeric" aria-label="Kuantiti" readonly><button type="button" id="qp" aria-label="Tambah">+</button></div></div>`:''}
       <label>Nama penuh<input id="f-nama" name="nama" autocomplete="name"></label>
       <label>No. telefon (WhatsApp)<input id="f-tel" name="telefon" inputmode="tel" autocomplete="tel" placeholder="01X-XXX XXXX"></label>
       <div><div style="font-size:13px;font-weight:700;color:var(--ink2);margin-bottom:6px">Kaedah penghantaran</div>
@@ -600,28 +608,33 @@ function showForm(x){
     </form></div>`);
   $('#back').onclick = () => showItem(x.kod);
   const f = $('#form');
+  const maxQ = Math.max(1, x.qty||1); let kq = 1;
+  const setQ = n => { kq = Math.min(maxQ, Math.max(1, n)); if (f.kuantiti) { f.kuantiti.value = kq; $('#qm').disabled = kq<=1; $('#qp').disabled = kq>=maxQ; }
+    $('#submit').textContent = 'Hantar tempahan · RM' + rm(x.harga*kq) + (kq>1 ? ' (' + kq + ' unit)' : ''); };
+  if (f.kuantiti) { $('#qm').onclick = () => setQ(kq-1); $('#qp').onclick = () => setQ(kq+1); }
+  setQ(1);
   const sync = () => $('#alamatL').hidden = f.kaedah.value === 'Ambil sendiri';
   f.querySelectorAll('[name=kaedah]').forEach(r => r.onchange = sync);
   f.onsubmit = async e => {
     e.preventDefault();
-    const d = Object.fromEntries(new FormData(f)); d.kod = x.kod;
+    const d = Object.fromEntries(new FormData(f)); d.kod = x.kod; d.kuantiti = kq;
     const err = m => { const el = $('#err'); el.textContent = m; el.hidden = !m; };
     if (d.nama.trim().length < 2) return err('Sila isi nama penuh.');
     if (!/^\+?\d{9,14}$/.test(d.telefon.replace(/[\s-]/g,''))) return err('Sila isi no. telefon yang betul, cth 0123456789.');
     if (d.kaedah !== 'Ambil sendiri' && d.alamat.trim().length < 10) return err('Sila isi alamat penghantaran penuh.');
     err(''); const b = $('#submit'); b.disabled = true; b.textContent = 'Menghantar…';
     let res;
-    if (PREVIEW) { await new Promise(r=>setTimeout(r,500)); res = {ok:true,kod:x.kod,harga:x.harga,tamat:new Date(Date.now()+864e5).toISOString(),bank:DATA.bank,noAkaun:DATA.noAkaun,namaAkaun:DATA.namaAkaun,wa:'https://wa.me/'+WA}; }
+    if (PREVIEW) { await new Promise(r=>setTimeout(r,500)); res = {ok:true,kod:x.kod,harga:x.harga*kq,kuantiti:kq,tamat:new Date(Date.now()+864e5).toISOString(),bank:DATA.bank,noAkaun:DATA.noAkaun,namaAkaun:DATA.namaAkaun,wa:'https://wa.me/'+WA}; }
     else { try { const r = await fetch(API,{method:'POST',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify(d)}); res = await r.json(); } catch(e2){ res = {ok:false,error:'Talian bermasalah. Sila cuba lagi.'}; } }
-    if (!res.ok) { err(res.error||'Tempahan gagal.'); b.disabled = false; b.textContent = 'Cuba lagi'; return; }
-    x.status = 'DITEMPAH'; render(); showDone(res);
+    if (!res.ok) { if (res.stok) { x.qty = res.stok; } err(res.error||'Tempahan gagal.'); b.disabled = false; b.textContent = 'Cuba lagi'; return; }
+    x.qty = Math.max(0, (x.qty||1) - kq); if (!x.qty) x.status = 'DITEMPAH'; render(); showDone(res);
   };
 }
 function showDone(o){
   const ms = new Date(o.tamat) - Date.now(), h = Math.floor(ms/36e5), m = Math.floor(ms%36e5/6e4);
   openSheet('TEMPAHAN DITERIMA', `<div class="body done" style="max-width:520px;margin:0 auto">
     <div class="tick"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="m5 12 5 5L20 7"/></svg></div>
-    <h3>Terima kasih!</h3><p style="color:var(--ink2)">Beg <b>${esc(o.kod)}</b> kini dikunci untuk anda.</p>
+    <h3>Terima kasih!</h3><p style="color:var(--ink2)">${(o.kuantiti||1)>1?`<b>${o.kuantiti} unit</b> beg `:'Beg '}<b>${esc(o.kod)}</b> kini dikunci untuk anda.</p>
     <div class="pay"><div class="lbl">Jumlah bayaran</div><div class="amt">RM${rm(o.harga)}</div>
       <div class="lbl" style="margin-bottom:6px">Pindahkan ke</div>
       <div class="acc"><div><b>${esc(o.noAkaun)}</b><span>${esc(o.bank)} · ${esc(o.namaAkaun)}</span></div><button class="copy" id="cp">Salin</button></div>
