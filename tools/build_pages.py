@@ -100,12 +100,22 @@ try:
     ada = [x for x in data['items'] if x['status'] == 'AVAILABLE' and x.get('gambar')]
     pilih = ([x for x in ada if x.get('kategori') == 'HANDBAG'] or ada)[-3:][::-1]
     dari = int(min(x['harga'] for x in ada)) if ada else 0
-    if og and pilih:
+    K = data.get('kongsi') or {}
+    isi = lambda t: t.replace('{bil}', str(len(ada))).replace('{dari}', str(dari))
+    poster = None
+    if K.get('poster'):   # poster sendiri dari admin
+        try:
+            poster = ImageOps.fit(ImageOps.exif_transpose(Image.open(io.BytesIO(get(K['poster'])))).convert('RGB'), (1200, 630), Image.LANCZOS)
+        except Exception as ex:
+            print('poster gagal', ex)
+    if poster is not None:
+        poster.save(os.path.join(OUT, 'og.jpg'), 'JPEG', quality=86, optimize=True, progressive=True)
+    elif og and pilih:
         og.simpan(og.kedai([foto(x, 600) for x in pilih], len(ada), dari), os.path.join(OUT, 'og.jpg'))
     ip = os.path.join(OUT, 'index.html')
     s = open(ip, encoding='utf-8').read()
-    t = 'Lilybelle 🎀 Beg Idaman untuk Wanita Moden'
-    dsc = '✨ %d beg tersedia%s · Stok baru setiap minggu. Tekan untuk lihat koleksi & tempah terus 💕' % (len(ada), (' dari RM%d' % dari) if dari else '')
+    t = isi(K['tajuk']) if K.get('tajuk') else 'Lilybelle 🎀 Beg Idaman untuk Wanita Moden'
+    dsc = isi(K['ayat']) if K.get('ayat') else '✨ %d beg tersedia%s · Stok baru setiap minggu. Tekan untuk lihat koleksi & tempah terus 💕' % (len(ada), (' dari RM%d' % dari) if dari else '')
     s = re.sub(r'<meta property="og:title" content="[^"]*">', '<meta property="og:title" content="%s">' % e(t), s)
     s = re.sub(r'<meta property="og:description" content="[^"]*">', '<meta property="og:description" content="%s">' % e(dsc), s)
     s = re.sub(r'(<meta property="og:image" content=")[^"]*(">)', r'\g<1>%sog.jpg?v=%s\g<2>' % (SITE, stamp), s)
