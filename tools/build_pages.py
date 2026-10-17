@@ -4,7 +4,7 @@ Facebook dan Telegram tunjuk gambar, nama dan harga beg bila link dikongsi."""
 import html, io, json, os, re, sys, time, urllib.request
 
 API = os.environ['LB_API']
-SITE = 'https://noruliqlima.github.io/lilybelle/'
+SITE = 'https://lilybelle.vercel.app/'
 OUT = sys.argv[1] if len(sys.argv) > 1 else '_site'
 UA = {'User-Agent': 'Mozilla/5.0 (Lilybelle page builder)'}
 
