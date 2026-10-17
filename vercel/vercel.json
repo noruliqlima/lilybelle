@@ -1,0 +1,1 @@
+{"rewrites":[{"source":"/","destination":"https://noruliqlima.github.io/lilybelle/"},{"source":"/:path*","destination":"https://noruliqlima.github.io/lilybelle/:path*"}]}
