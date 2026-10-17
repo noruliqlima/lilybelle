@@ -214,7 +214,7 @@ select.sort{height:40px;border-radius:var(--r-s);border:1px solid var(--line);ba
 .ph{position:relative;aspect-ratio:var(--img);max-width:100%;background:var(--soft);overflow:hidden}
 .ph img{width:100%;height:100%;object-fit:cover}
 .tag{position:absolute;top:10px;left:10px;font-size:10.5px;font-weight:800;letter-spacing:.08em;padding:4px 9px;border-radius:999px;background:color-mix(in srgb,var(--paper) 92%,transparent);color:var(--ink)}
-.tag.bundle{background:var(--gold);color:#fff}
+.tag.bundle{background:#F5A524;color:#2A1A00;border-radius:6px;letter-spacing:.1em;box-shadow:0 3px 8px -2px rgba(245,165,36,.6)}
 .tag.new{background:#FE2C55;color:#fff;border-radius:6px;letter-spacing:.1em;box-shadow:0 3px 8px -2px rgba(254,44,85,.55)}
 :root[data-d="b"] .tag{border-radius:0;font-weight:500;letter-spacing:.16em}
 .count{position:absolute;bottom:10px;left:10px;font-size:11px;font-weight:700;padding:3px 8px;border-radius:999px;background:rgba(20,14,16,.6);color:#fff}
@@ -274,6 +274,12 @@ select.sort{height:40px;border-radius:var(--r-s);border:1px solid var(--line);ba
 .step i{font-style:normal;font-family:var(--display);font-size:22px;color:var(--gold)}
 .step b{display:block;margin:4px 0 2px}
 .step p{font-size:13.5px;color:var(--ink2)}
+.shopcta{max-width:1180px;margin:28px auto 0;padding:18px 20px;margin-inline:16px;display:flex;align-items:center;justify-content:space-between;gap:14px;flex-wrap:wrap;border-radius:18px;background:linear-gradient(120deg,var(--accent),#E0559B);color:#fff;box-shadow:var(--shadow)}
+@media(min-width:1212px){.shopcta{margin-inline:auto}}
+@media(max-width:430px){.wa-top{font-size:0!important;gap:0!important;width:38px;height:38px;padding:0!important;justify-content:center;border-radius:50%}.wa-top svg{width:18px;height:18px}}
+.shopcta b{display:block;font-size:16px}.shopcta span{font-size:13px;opacity:.9}
+.shopcta .btn{background:#fff;color:#5B3BB5;display:inline-flex;align-items:center;gap:8px;width:auto;padding:11px 18px;border-radius:999px;font-weight:800;border:0;cursor:pointer}
+.shopcta .btn svg,.mode svg{width:18px;height:18px}
 footer{padding-block:20px 110px;color:var(--ink3);font-size:12.5px;text-align:center}
 
 .ov{position:fixed;inset:0;z-index:70;background:rgba(15,10,12,.55);display:flex;align-items:flex-end;justify-content:center;opacity:0;transition:opacity .2s}
@@ -376,7 +382,7 @@ footer{padding-block:20px 110px;color:var(--ink3);font-size:12.5px;text-align:ce
 <header id="hdr" class="lbh">
   <div class="wrap bar">
     <a class="logo" href="#"><span class="mark" id="mark">M</span><span class="name" id="name"></span></a>
-    <div class="hd-r"><button class="mode" id="modeBtn" type="button" aria-label="Tukar mod gelap / cerah" title="Mod gelap / cerah"><svg class="moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8Z"/></svg><svg class="sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="4.2"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg></button><a class="wa-top" id="waTop" href="#" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2Zm4.5 12.1c-.2-.1-1.5-.7-1.7-.8-.2-.1-.4-.1-.6.1l-.8 1c-.1.2-.3.2-.5.1a6.7 6.7 0 0 1-3.3-2.9c-.3-.4.3-.4.7-1.3.1-.2 0-.3 0-.4l-.8-1.8c-.2-.5-.4-.4-.6-.4h-.5c-.2 0-.4.1-.6.3-.2.2-.8.8-.8 2s.8 2.3 1 2.5c.1.1 1.6 2.5 4 3.5 1.5.6 2.1.7 2.8.6.5-.1 1.5-.6 1.7-1.2.2-.6.2-1.1.1-1.2Z"/></svg>WhatsApp</a></div>
+    <div class="hd-r"><button class="mode" id="shopShare" type="button" aria-label="Kongsi kedai" title="Kongsi kedai"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><path d="m8.6 13.5 6.8 4M15.4 6.5l-6.8 4"/></svg></button><button class="mode" id="modeBtn" type="button" aria-label="Tukar mod gelap / cerah" title="Mod gelap / cerah"><svg class="moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8Z"/></svg><svg class="sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="4.2"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg></button><a class="wa-top" id="waTop" href="#" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2Zm4.5 12.1c-.2-.1-1.5-.7-1.7-.8-.2-.1-.4-.1-.6.1l-.8 1c-.1.2-.3.2-.5.1a6.7 6.7 0 0 1-3.3-2.9c-.3-.4.3-.4.7-1.3.1-.2 0-.3 0-.4l-.8-1.8c-.2-.5-.4-.4-.6-.4h-.5c-.2 0-.4.1-.6.3-.2.2-.8.8-.8 2s.8 2.3 1 2.5c.1.1 1.6 2.5 4 3.5 1.5.6 2.1.7 2.8.6.5-.1 1.5-.6 1.7-1.2.2-.6.2-1.1.1-1.2Z"/></svg>WhatsApp</a></div>
   </div>
   <div class="wrap sbar">
     <div class="search">
@@ -431,6 +437,7 @@ footer{padding-block:20px 110px;color:var(--ink3);font-size:12.5px;text-align:ce
       <li>Ragu-ragu? WhatsApp nombor rasmi kami di butang atas sebelum bayar.</li></ul></div>
   </section>
 </main>
+<section class="shopcta"><div><b>Suka kedai ini?</b><span>Kongsi dengan kawan &amp; keluarga — mereka pun boleh dapat beg idaman.</span></div><button class="btn" id="shopShare2" type="button"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><path d="m8.6 13.5 6.8 4M15.4 6.5l-6.8 4"/></svg>Kongsi kedai</button></section>
 <footer>© <span id="yr"></span> <span id="fname"></span> · Stok dikemaskini secara automatik</footer>
 
 <div class="ov" id="ov" hidden>
@@ -507,7 +514,7 @@ function render(){
   const cats = CAT_ORDER.filter(c => items.some(x => x.kategori === c));
   let chips = `<button class="chip" data-c="SEMUA" aria-pressed="${cat==='SEMUA'}">Semua<small>${items.length}</small></button>`;
   chips += cats.map(c => `<button class="chip" data-c="${c}" aria-pressed="${cat===c}">${CAT_LABEL[c]}<small>${items.filter(x=>x.kategori===c).length}</small></button>`).join('');
-  if (items.some(x=>x.jenis==='BARU') && items.some(x=>x.jenis==='BUNDLE')) chips += ['BARU','BUNDLE'].map(j => `<button class="chip" data-j="${j}" aria-pressed="${jenis===j}">${j==='BARU'?'Baru':'Bundle'}</button>`).join('');
+  if (items.some(x=>x.jenis==='BARU') && items.some(x=>x.jenis==='BUNDLE')) chips += ['BARU','BUNDLE'].map(j => `<button class="chip" data-j="${j}" aria-pressed="${jenis===j}">${j==='BARU'?'Baru':'📦 Bundle'}</button>`).join('');
   if (flt) chips = `<button class="chip fx" data-x="1" aria-pressed="true">${flt==='baru'?'Baru Tiba':'Sale'} ✕</button>` + chips;
   $('#cats').innerHTML = chips;
   renderTop(items, avail);
@@ -521,7 +528,7 @@ function render(){
 function card(x){
   return `<article class="card" data-k="${esc(x.kod)}" tabindex="0" aria-label="${esc(x.brand)} ${esc(x.details)}">
     <div class="ph"><img loading="lazy" src="${esc(x.gambar[0])}" alt="${esc(x.brand)} ${esc(x.details)}">
-      ${x.jenis?`<span class="tag ${x.jenis==='BUNDLE'?'bundle':'new'}">${x.jenis==='BARU'?'NEW':esc(x.jenis)}</span>`:''}
+      ${x.jenis?`<span class="tag ${x.jenis==='BUNDLE'?'bundle':'new'}">${x.jenis==='BARU'?'NEW':x.jenis==='BUNDLE'?'📦 BUNDLE':esc(x.jenis)}</span>`:''}
       ${x.gambar.length>1?`<span class="count" style="bottom:auto;top:42px">${x.gambar.length} gambar</span>`:''}
       ${sale(x) && x.status==='AVAILABLE'?`<span class="disc">-${sale(x)}%</span>`:''}
       ${x.status==='AVAILABLE' && (x.baru || sale(x)) ? `<div class="strip">${x.baru?'<span class="seg tq"><b>BARU TIBA</b><small>Stok minggu ini</small></span>':''}${sale(x)?`<span class="seg rd"><b>SALE</b><small>Jimat RM${rm(x.hargaAsal-x.harga)}</small></span>`:''}</div>` : ''}
@@ -558,17 +565,26 @@ const linkOf = x => SITE + 'p/' + x.kod + '.html';  // halaman kongsi: WhatsApp 
 
 function share(x){
   const url = linkOf(x), text = `${x.brand} ${x.details} — RM${rm(x.harga)}`;
+  kongsi('KONGSI BEG', url, text, `<img src="${esc(x.gambar[0])}" alt=""><div><b>${esc(x.brand)}</b><span>${esc(x.kod)} · RM${rm(x.harga)}</span></div>`);
+}
+// Kongsi seluruh kedai
+function shareShop(){
+  const n = DATA ? DATA.items.filter(i => i.status === 'AVAILABLE').length : 0;
+  const text = `🛍️ ${SKINS[skin].plain} — beg tangan cantik harga mampu milik${n ? ` (${n} beg tersedia)` : ''}. Tengok koleksi & tempah terus di sini:`;
+  kongsi('KONGSI KEDAI', SITE, text, `<img src="${SITE}og.jpg" alt=""><div><b>${esc(SKINS[skin].plain)}</b><span>${n ? n + ' beg tersedia · ' : ''}Kongsi dengan kawan</span></div>`);
+}
+function kongsi(tajuk, url, text, prev){
   if (!PREVIEW && navigator.share) { navigator.share({title:SKINS[skin].plain, text, url}).catch(()=>{}); return; }
   const msg = encodeURIComponent(text + '\n' + url);
-  openSheet('KONGSI BEG', `<div class="body">
-    <div class="sprev"><img src="${esc(x.gambar[0])}" alt=""><div><b>${esc(x.brand)}</b><span>${esc(x.kod)} · RM${rm(x.harga)}</span></div></div>
+  openSheet(tajuk, `<div class="body">
+    <div class="sprev">${prev}</div>
     <div class="apps">
       <a class="app" href="https://wa.me/?text=${msg}" target="_blank" rel="noopener"><i style="background:#1DA851">${ICON.wa}</i>WhatsApp</a>
       <a class="app" href="https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(url)}" target="_blank" rel="noopener"><i style="background:#1877F2">${ICON.fb}</i>Facebook</a>
       <a class="app" href="https://t.me/share/url?url=${encodeURIComponent(url)}&text=${encodeURIComponent(text)}" target="_blank" rel="noopener"><i style="background:#2AABEE">${ICON.tg}</i>Telegram</a>
       <button class="app" id="cpl"><i style="background:var(--ink);color:var(--bg)">${ICON.link}</i>Salin link</button>
     </div>
-    <div class="linkbox"><input id="lnk" readonly value="${esc(url)}" aria-label="Link beg"></div>
+    <div class="linkbox"><input id="lnk" readonly value="${esc(url)}" aria-label="Link"></div>
   </div>`, 'share-sh');
   $('#cpl').onclick = async () => { try { await navigator.clipboard.writeText(url); toast('Link disalin'); } catch(e){ const i=$('#lnk'); i.focus(); i.select(); toast('Tekan lama untuk salin'); } };
 }
@@ -579,7 +595,7 @@ function showItem(k){
   openSheet(x.kod, `<div class="pd"><div class="gal"><div class="slides" id="slides">${x.gambar.map((g,i)=>`<img src="${esc(g)}" alt="Gambar ${i+1}">`).join('')}</div>
     ${x.gambar.length>1?`<div class="dots" id="dots">${x.gambar.map((_,i)=>`<i class="${i?'':'on'}"></i>`).join('')}</div>`:''}</div>
     <div class="body"><div class="kod">${esc(x.kod)}</div><div class="brand">${esc(x.brand)}</div><div class="det">${esc(x.details)}</div>
-    <div class="meta">${[CAT_LABEL[x.kategori]||x.kategori, x.jenis, x.baru?'Baru tiba':''].filter(Boolean).map(m=>`<span>${esc(m)}</span>`).join('')}</div>
+    <div class="meta">${[CAT_LABEL[x.kategori]||x.kategori, x.jenis==='BARU'?'Baru (new)':x.jenis==='BUNDLE'?'📦 Bundle':x.jenis, x.baru?'Baru tiba':''].filter(Boolean).map(m=>`<span>${esc(m)}</span>`).join('')}</div>
     <div class="bigprice"><small style="font-size:.5em">RM</small>${rm(x.harga)}${hargaAsal(x).replace('class="was"','class="was" style="font-size:16px"')}${sale(x)?`<span class="off">-${sale(x)}%</span>`:''}</div>
     ${!held?`<div class="left1" style="margin:-8px 0 14px">🔥 ${x.qty>1?'Tinggal '+x.qty+' unit':'Tinggal 1 unit sahaja'}${x.lawatan>=5?' · '+x.lawatan+' orang dah tengok':''}</div>`:''}
     ${held?'<button class="btn" disabled>Sudah ditempah</button>':'<button class="btn" id="go">Tempah sekarang</button>'}
@@ -730,6 +746,7 @@ $('#q').addEventListener('keydown', e => { if (e.key === 'Enter') { q = e.target
 $('#close').onclick = closeSheet;
 ov.addEventListener('click', e => { if (e.target === ov) closeSheet(); });
 document.addEventListener('keydown', e => { if (e.key === 'Escape' && !ov.hidden) closeSheet(); });
+$('#shopShare').addEventListener('click', shareShop); $('#shopShare2').addEventListener('click', shareShop);
 (function(){
   const root = document.documentElement, mq = matchMedia('(prefers-color-scheme: dark)');
   const isDark = () => root.dataset.theme ? root.dataset.theme === 'dark' : mq.matches;
