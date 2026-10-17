@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Jana halaman kongsi setiap beg (p/KOD.html + p/KOD.jpg) supaya WhatsApp,
 Facebook dan Telegram tunjuk gambar, nama dan harga beg bila link dikongsi."""
-import html, io, json, os, re, sys, urllib.request
+import html, io, json, os, re, sys, time, urllib.request
 
 API = os.environ['LB_API']
 SITE = 'https://noruliqlima.github.io/lilybelle/'
@@ -18,29 +18,57 @@ if not data.get('ok'):
 os.makedirs(os.path.join(OUT, 'p'), exist_ok=True)
 rm = lambda n: ('%.2f' % n).rstrip('0').rstrip('.')
 e = lambda s: html.escape(str(s), quote=True)
+
+# Fon untuk gambar preview feminin (dimuat turun dari Google Fonts di GitHub)
+FD = os.path.join(OUT, '..', '_fonts')
+os.makedirs(FD, exist_ok=True)
+for nama, path in [('PlayfairDisplay.ttf', 'ofl/playfairdisplay/PlayfairDisplay%5Bwght%5D.ttf'),
+                   ('PlayfairDisplay-Italic.ttf', 'ofl/playfairdisplay/PlayfairDisplay-Italic%5Bwght%5D.ttf'),
+                   ('GreatVibes-Regular.ttf', 'ofl/greatvibes/GreatVibes-Regular.ttf'),
+                   ('PlusJakartaSans.ttf', 'ofl/plusjakartasans/PlusJakartaSans%5Bwght%5D.ttf')]:
+    try:
+        if not os.path.exists(os.path.join(FD, nama)):
+            open(os.path.join(FD, nama), 'wb').write(get('https://raw.githubusercontent.com/google/fonts/main/' + path))
+    except Exception as ex:
+        print('fon gagal', nama, ex)
+os.environ['LB_FONTS'] = FD
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+try:
+    import og
+except Exception as ex:
+    og = None; print('og.py gagal dimuat', ex)
+from PIL import Image, ImageOps
+foto_cache = {}
+def foto(x, w=800):
+    k = x['kod']
+    if k not in foto_cache:
+        foto_cache[k] = ImageOps.exif_transpose(Image.open(io.BytesIO(get(re.sub(r'=w\d+$', '=w%d' % w, x['gambar'][0]))))).convert('RGB')
+    return foto_cache[k]
+stamp = time.strftime('%Y%m%d%H%M')
 n = 0
 for x in data['items']:
     kod = x['kod']
     if not re.fullmatch(r'[A-Z]{2}-\d{3,}', kod):
         continue
-    img = ''
-    if x.get('gambar'):
-        try:
-            b = get(re.sub(r'=w\d+$', '=w800', x['gambar'][0]))
-            # Kecilkan ke 600x600 JPEG (<150KB) supaya WhatsApp pasti tunjuk gambar
-            from PIL import Image, ImageOps
-            im = ImageOps.exif_transpose(Image.open(io.BytesIO(b))).convert('RGB')
-            im = ImageOps.fit(im, (600, 600), Image.LANCZOS)
-            im.save(os.path.join(OUT, 'p', kod + '.jpg'), 'JPEG', quality=80, optimize=True, progressive=True)
-            img = SITE + 'p/' + kod + '.jpg'
-        except Exception as ex:
-            print('gambar gagal', kod, ex)
+    img, iw, ih = '', 600, 600
     harga = 'RM' + rm(x['harga'])
     asal = x.get('hargaAsal') or 0
+    qty = int(x.get('qty') or 1)
+    if x.get('gambar'):
+        try:
+            if og:   # kad preview feminin 1200x630: gambar + nama + harga + baki stok
+                og.simpan(og.produk(foto(x), x['brand'], x['details'], harga, ('Harga asal RM%s' % rm(asal)) if asal > x['harga'] else '',
+                                    qty, 'AVAILABLE' if x['status'] == 'AVAILABLE' else 'Sedang ditempah'), os.path.join(OUT, 'p', kod + '.jpg'))
+                iw, ih = 1200, 630
+            else:
+                ImageOps.fit(foto(x), (600, 600), Image.LANCZOS).save(os.path.join(OUT, 'p', kod + '.jpg'), 'JPEG', quality=80, optimize=True, progressive=True)
+            img = SITE + 'p/' + kod + '.jpg?v=' + stamp
+        except Exception as ex:
+            print('gambar gagal', kod, ex)
     jual = harga + (' (asal RM%s)' % rm(asal) if asal > x['harga'] else '')
-    status = 'Masih ada · 1 unit sahaja' if x['status'] == 'AVAILABLE' else 'Sedang ditempah'
-    title = '%s · %s' % (x['brand'], harga)
-    desc = '%s. %s. %s — tempah di Lilybelle.' % (x['details'].title(), jual, status)
+    status = ('Tinggal %d unit' % qty if qty > 1 else 'Tinggal 1 unit sahaja') if x['status'] == 'AVAILABLE' else 'Sedang ditempah'
+    title = '👜 %s · %s 🎀' % (x['brand'], harga)
+    desc = '✨ %s · %s · %s. Tekan untuk lihat & tempah di Lilybelle 💕' % (x['details'].title(), jual, status)
     url = SITE + 'p/' + kod + '.html'
     dest = SITE + '#' + kod
     page = f'''<!doctype html>
@@ -53,7 +81,7 @@ for x in data['items']:
 <meta property="og:title" content="{e(title)}">
 <meta property="og:description" content="{e(desc)}">
 <meta property="og:url" content="{e(url)}">
-{f'<meta property="og:image" content="{e(img)}"><meta property="og:image:width" content="600"><meta property="og:image:height" content="600">' if img else ''}
+{f'<meta property="og:image" content="{e(img)}"><meta property="og:image:width" content="{iw}"><meta property="og:image:height" content="{ih}">' if img else ''}
 <meta property="product:price:amount" content="{rm(x['harga'])}"><meta property="product:price:currency" content="MYR">
 <meta name="twitter:card" content="summary_large_image">
 <link rel="canonical" href="{e(url)}">
@@ -66,3 +94,22 @@ for x in data['items']:
         f.write(page)
     n += 1
 print('Halaman produk dijana:', n)
+
+# Gambar & teks preview kedai — dijana semula setiap 30 minit dengan beg terbaru
+try:
+    ada = [x for x in data['items'] if x['status'] == 'AVAILABLE' and x.get('gambar')]
+    pilih = ([x for x in ada if x.get('kategori') == 'HANDBAG'] or ada)[-3:][::-1]
+    dari = int(min(x['harga'] for x in ada)) if ada else 0
+    if og and pilih:
+        og.simpan(og.kedai([foto(x, 600) for x in pilih], len(ada), dari), os.path.join(OUT, 'og.jpg'))
+    ip = os.path.join(OUT, 'index.html')
+    s = open(ip, encoding='utf-8').read()
+    t = 'Lilybelle 🎀 Beg Idaman untuk Wanita Moden'
+    dsc = '✨ %d beg tersedia%s · Stok baru setiap minggu. Tekan untuk lihat koleksi & tempah terus 💕' % (len(ada), (' dari RM%d' % dari) if dari else '')
+    s = re.sub(r'<meta property="og:title" content="[^"]*">', '<meta property="og:title" content="%s">' % e(t), s)
+    s = re.sub(r'<meta property="og:description" content="[^"]*">', '<meta property="og:description" content="%s">' % e(dsc), s)
+    s = re.sub(r'(<meta property="og:image" content=")[^"]*(">)', r'\g<1>%sog.jpg?v=%s\g<2>' % (SITE, stamp), s)
+    open(ip, 'w', encoding='utf-8').write(s)
+    print('Preview kedai dikemas kini:', len(ada), 'beg')
+except Exception as ex:
+    print('preview kedai gagal', ex)
