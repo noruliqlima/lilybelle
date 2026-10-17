@@ -1,0 +1,233 @@
+<!doctype html>
+<html lang="ms">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Panel Agent · Lilybelle</title>
+<meta name="robots" content="noindex">
+<meta name="theme-color" content="#7B55D3">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data: https://*.googleusercontent.com; connect-src https://script.google.com https://script.googleusercontent.com; object-src 'none'; base-uri 'none'; form-action 'none'">
+<meta name="referrer" content="strict-origin-when-cross-origin">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#EBE3F8;--paper:#fff;--soft:#F3EEFC;--ink:#2A2140;--ink2:#675C80;--ink3:#9A90B0;--line:#E4DCF3;--accent:#7B55D3;--accent2:#6441B8;--pink:#FF7FA3;
+  --ok:#0F8A5F;--ok-bg:#E3F6EE;--bad:#D23B5B;--bad-bg:#FDE8EE;--grad:linear-gradient(120deg,#7B55D3 0%,#A95BD8 50%,#FF7FA3 100%);
+  --shadow:0 1px 2px rgba(60,35,120,.08),0 10px 24px -6px rgba(80,50,150,.20);color-scheme:light}
+@media (prefers-color-scheme:dark){:root{--bg:#16111F;--paper:#211A2E;--soft:#2A2240;--ink:#F1ECFA;--ink2:#BDB2D6;--ink3:#8C82A6;--line:#2E2740;--accent:#A585F2;--accent2:#B99CF6;
+  --ok:#4ADE9B;--ok-bg:#0F2E22;--bad:#FB7C97;--bad-bg:#3A1622;--grad:linear-gradient(120deg,#4A2C96 0%,#6E3492 50%,#A8466F 100%);color-scheme:dark}}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--ink);font:15px/1.45 'Plus Jakarta Sans',system-ui,sans-serif;min-height:100vh;-webkit-font-smoothing:antialiased}
+button,input{font:inherit;color:inherit}button{cursor:pointer;border:0;background:none}
+.wrap{max-width:760px;margin:0 auto;padding:0 16px}
+.hero{background:var(--grad);color:#fff;border-radius:0 0 26px 26px;padding:calc(18px + env(safe-area-inset-top)) 0 22px;box-shadow:0 10px 30px -12px rgba(123,85,211,.55)}
+.bar{display:flex;align-items:center;justify-content:space-between;gap:10px}
+.logo{display:flex;align-items:center;gap:10px;font-weight:800}
+.mk{width:34px;height:34px;border-radius:11px;background:rgba(255,255,255,.2);display:grid;place-items:center;font:700 18px 'Fraunces',serif}
+.logo small{display:block;font-size:11.5px;font-weight:600;opacity:.85}
+.ghostw{height:34px;padding:0 13px;border-radius:17px;background:rgba(255,255,255,.18);font-size:12.5px;font-weight:700;color:#fff}
+.hero h1{font:700 26px/1.15 'Fraunces',serif;margin:18px 0 4px}
+.hero p{opacity:.9;font-size:13.5px}
+.linkbox{margin-top:14px;display:flex;gap:8px;align-items:center;background:rgba(255,255,255,.16);border:1px solid rgba(255,255,255,.3);border-radius:14px;padding:6px 6px 6px 12px}
+.linkbox code{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:13px}
+.linkbox button{height:34px;padding:0 13px;border-radius:10px;background:#fff;color:var(--accent);font-weight:800;font-size:12.5px;flex:none}
+.card{background:var(--paper);border-radius:18px;box-shadow:var(--shadow)}
+.tabs{display:flex;gap:6px;margin:16px 0 12px}
+.tab{flex:1;height:40px;border-radius:12px;font-weight:800;font-size:13.5px;color:var(--ink2);background:var(--paper);border:1px solid var(--line)}
+.tab[aria-pressed=true]{background:var(--accent);color:#fff;border-color:var(--accent)}
+.panel{padding:16px;margin-bottom:12px}
+.panel h2{font-size:15px;font-weight:800;margin-bottom:10px}
+.fl{display:flex;flex-direction:column;gap:5px;font-size:12.5px;font-weight:700;color:var(--ink2)}
+.fl input{height:44px;border:1px solid var(--line);border-radius:12px;padding:0 12px;background:var(--paper);outline:none;font-size:15px;color:var(--ink)}
+.fl input:focus{border-color:var(--accent)}
+.btn{height:44px;padding:0 18px;border-radius:12px;background:var(--accent);color:#fff;font-weight:800;display:inline-flex;align-items:center;justify-content:center;gap:6px}
+.btn:disabled{opacity:.6}
+.btn.ghost{background:var(--paper);color:var(--ink);border:1px solid var(--line)}
+.btn.sm{height:36px;padding:0 12px;font-size:13px;border-radius:10px}
+.btn.block{width:100%}
+.err{background:var(--bad-bg);color:var(--bad);border-radius:11px;padding:10px 12px;font-size:13px;font-weight:700}
+.note{font-size:12.5px;color:var(--ink3)}
+.bulk{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.bulk input{width:90px;height:36px;border:1px solid var(--line);border-radius:10px;padding:0 10px;background:var(--paper);color:var(--ink);font-size:14px}
+.search{height:42px;width:100%;border:1px solid var(--line);border-radius:12px;padding:0 12px;background:var(--paper);color:var(--ink);font-size:14px;margin-bottom:10px}
+.list{display:flex;flex-direction:column;gap:8px}
+.it{display:grid;grid-template-columns:56px minmax(0,1fr) 112px;gap:10px;align-items:center;padding:10px}
+.it img,.it .ni{width:56px;height:56px;border-radius:12px;object-fit:cover;background:var(--soft)}
+.it .tx{min-width:0}
+.it .tx b{display:block;font-size:13.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.it .tx span{display:block;font-size:12px;color:var(--ink2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.it .tx em{font-style:normal;font-size:12px;color:var(--ink3)}
+.pr{display:flex;flex-direction:column;gap:3px;align-items:stretch}
+.pr label{position:relative}
+.pr label::before{content:'RM';position:absolute;left:9px;top:50%;transform:translateY(-50%);font-size:12px;font-weight:700;color:var(--ink3)}
+.pr input{width:100%;height:40px;border:1px solid var(--line);border-radius:10px;padding:0 8px 0 32px;background:var(--paper);color:var(--ink);font-size:15px;font-weight:700;text-align:right}
+.pr input:focus{outline:none;border-color:var(--accent)}
+.pr small{font-size:11.5px;font-weight:800;text-align:right}
+.pos{color:var(--ok)}.neg{color:var(--bad)}.mut{color:var(--ink3)}
+.save{position:sticky;bottom:0;padding:12px 0 calc(12px + env(safe-area-inset-bottom));background:linear-gradient(to top,var(--bg) 70%,transparent);display:flex;gap:10px;align-items:center}
+.save .msg{flex:1;font-size:12.5px;font-weight:700;color:var(--ink2)}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:12px}
+.stats div{background:var(--paper);border-radius:14px;padding:12px;box-shadow:var(--shadow);min-width:0}
+.stats small{display:block;font-size:11.5px;font-weight:700;color:var(--ink3)}.stats b{font-size:17px}
+.od{display:flex;justify-content:space-between;gap:10px;padding:12px 14px;border-bottom:1px solid var(--line)}
+.od:last-child{border-bottom:0}
+.od b{display:block;font-size:13.5px}.od span{font-size:12px;color:var(--ink2)}
+.pill{display:inline-block;font-size:10.5px;font-weight:800;padding:3px 8px;border-radius:10px;background:var(--soft);color:var(--accent);white-space:nowrap}
+.pill.ok{background:var(--ok-bg);color:var(--ok)}.pill.bad{background:var(--bad-bg);color:var(--bad)}
+.login{min-height:100vh;display:grid;place-items:center;padding:24px 16px;background:var(--grad)}
+.lbox{width:100%;max-width:380px;padding:26px;display:grid;gap:12px}
+.lbox .mk{background:var(--grad);color:#fff;width:44px;height:44px;font-size:22px;border-radius:14px}
+.lbox h1{font:700 24px 'Fraunces',serif}
+.empty{padding:26px;text-align:center;color:var(--ink3);font-size:13px}
+.toast{position:fixed;left:50%;bottom:calc(84px + env(safe-area-inset-bottom));transform:translate(-50%,20px);background:var(--ink);color:var(--bg);padding:10px 16px;border-radius:12px;font-size:13px;font-weight:700;opacity:0;transition:.2s;pointer-events:none;z-index:9;max-width:calc(100% - 32px)}
+.toast.on{opacity:1;transform:translate(-50%,0)}
+@media(max-width:420px){.it{grid-template-columns:48px minmax(0,1fr) 100px}.it img,.it .ni{width:48px;height:48px}.hero h1{font-size:22px}}
+</style>
+</head>
+<body>
+<div id="root"></div>
+<div class="toast" id="toast" role="status"></div>
+<script>
+const API = 'https://script.google.com/macros/s/AKfycbwgpMyz8qWkFbWtS19gvF9IcviGVTgKMSJ4eUxU5AJ-lTdFg9UQSjapGrlKaMkExQHq/exec';
+const $ = s => document.querySelector(s);
+const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const rm = n => 'RM' + (Math.round((+n||0)*100)/100).toLocaleString('en-MY',{maximumFractionDigits:2});
+const store = { get(k){ try { return localStorage.getItem(k); } catch(e){ return null; } }, set(k,v){ try { localStorage.setItem(k,v); } catch(e){} }, del(k){ try { localStorage.removeItem(k); } catch(e){} } };
+function toast(m){ const t = $('#toast'); t.textContent = m; t.classList.add('on'); clearTimeout(t._t); t._t = setTimeout(() => t.classList.remove('on'), 2200); }
+async function api(d){
+  const r = await fetch(API, { method:'POST', headers:{'Content-Type':'text/plain;charset=utf-8'}, body: JSON.stringify(d) });
+  const j = await r.json();
+  if (j.error === 'SESI_TAMAT') { store.del('lb_ag_tok'); TOK = null; login('Sesi tamat. Sila log masuk semula.'); throw new Error('SESI_TAMAT'); }
+  return j;
+}
+let TOK = store.get('lb_ag_tok'), P = null, TAB = 'harga', Q = '', DIRTY = false;
+
+function login(msg){
+  document.body.innerHTML = `<div class="login"><form class="card lbox" id="lf" novalidate>
+    <span class="mk">L</span><h1>Panel Agent</h1>
+    <p class="note" style="font-size:13.5px;color:var(--ink2)">Log masuk untuk letak harga kedai Lilybelle anda.</p>
+    <label class="fl">ID agent<input id="aid" autocapitalize="off" autocomplete="username" value="${esc(store.get('lb_ag_id')||'')}"></label>
+    <label class="fl">Kata laluan<input id="apw" type="password" autocomplete="current-password"></label>
+    <div class="err" id="lerr" ${msg?'':'hidden'}>${esc(msg||'')}</div>
+    <button class="btn block" id="lbtn">Log masuk</button>
+    <p class="note">Tiada akaun? Hubungi Lilybelle untuk jadi agent.</p>
+  </form></div><div class="toast" id="toast" role="status"></div>`;
+  $('#lf').onsubmit = async e => {
+    e.preventDefault(); const b = $('#lbtn'), er = $('#lerr');
+    b.disabled = true; b.textContent = 'Memeriksa…'; er.hidden = true;
+    try {
+      const r = await api({ aksi:'login', id: $('#aid').value.trim(), kata: $('#apw').value });
+      if (!r.ok) throw new Error(r.error);
+      TOK = r.token; store.set('lb_ag_tok', TOK); store.set('lb_ag_id', r.agent.id); P = r; shell();
+    } catch(e2){ er.textContent = e2.message || 'Ralat sambungan. Cuba lagi.'; er.hidden = false; b.disabled = false; b.textContent = 'Log masuk'; }
+  };
+  setTimeout(() => ($('#aid').value ? $('#apw') : $('#aid')).focus(), 50);
+}
+
+async function boot(){
+  if (!TOK) return login();
+  document.body.innerHTML = '<div class="login"><div class="card lbox" style="text-align:center">Memuatkan…</div></div><div class="toast" id="toast"></div>';
+  try { const r = await api({ aksi:'data', token: TOK }); if (!r.ok) throw new Error(r.error); P = r; shell(); }
+  catch(e){ if (e.message !== 'SESI_TAMAT') login('Tak dapat sambung. Cuba lagi.'); }
+}
+
+function shell(){
+  const a = P.agent;
+  document.body.innerHTML = `
+  <div class="hero"><div class="wrap">
+    <div class="bar"><div class="logo"><span class="mk">L</span><div>Lilybelle<small>Panel Agent · ${esc(a.nama)}</small></div></div><button class="ghostw" id="out">Keluar</button></div>
+    <h1>${esc(a.kedai)}</h1><p>Letak harga anda sendiri. Customer bayar kepada Lilybelle, kami uruskan penghantaran, komisen anda dibayar kemudian.</p>
+    <div class="linkbox"><code>${esc(P.link)}</code><button id="share">Kongsi</button></div>
+  </div></div>
+  <div class="wrap">
+    <div class="tabs"><button class="tab" data-t="harga" aria-pressed="${TAB==='harga'}">Harga beg</button><button class="tab" data-t="jualan" aria-pressed="${TAB==='jualan'}">Jualan saya</button><button class="tab" data-t="akaun" aria-pressed="${TAB==='akaun'}">Akaun</button></div>
+    <div id="page"></div>
+  </div><div class="toast" id="toast" role="status"></div>`;
+  $('#out').onclick = async () => { try { await api({ aksi:'keluar', token: TOK }); } catch(e){} store.del('lb_ag_tok'); TOK = null; login(); };
+  $('#share').onclick = shareKedai;
+  document.querySelectorAll('[data-t]').forEach(b => b.onclick = () => { if (TAB === 'harga' && DIRTY && !confirm('Ada harga belum disimpan. Tinggalkan?')) return; DIRTY = false; TAB = b.dataset.t; shell(); });
+  ({ harga: pHarga, jualan: pJualan, akaun: pAkaun })[TAB]();
+}
+async function shareKedai(){
+  const text = `🎀 ${P.agent.kedai} — beg idaman untuk wanita moden ✨\n👜 Tengok koleksi & tempah terus di sini:`;
+  if (navigator.share) { navigator.share({ title: P.agent.kedai, text, url: P.link }).catch(()=>{}); return; }
+  try { await navigator.clipboard.writeText(P.link); toast('Link kedai disalin'); } catch(e){ toast(P.link); }
+}
+
+/* Harga */
+function pHarga(){
+  const items = P.items;
+  $('#page').innerHTML = `
+  <div class="card panel"><h2>Nama kedai anda</h2>
+    <label class="fl"><input id="kedai" maxlength="40" value="${esc(P.agent.kedai)}"></label>
+    <p class="note" style="margin-top:6px">Ditunjuk di atas kedai: "🛍️ ${esc(P.agent.kedai)} · Agent rasmi Lilybelle"</p></div>
+  <div class="card panel"><h2>Ubah semua sekali gus</h2>
+    <div class="bulk"><span class="note" style="font-size:13px;color:var(--ink2)">Harga Lilybelle +</span><input id="tambah" inputmode="decimal" placeholder="20"><button class="btn sm" id="bApply" type="button">Guna untuk semua</button><button class="btn ghost sm" id="bReset" type="button">Kosongkan semua</button></div>
+    <p class="note" style="margin-top:8px">Kosong = guna harga Lilybelle. Untung anda = harga anda − harga Lilybelle.</p></div>
+  <input class="search" id="q" type="search" placeholder="Cari jenama, kod…" value="${esc(Q)}">
+  <div class="list" id="list"></div>
+  <div class="save"><span class="msg" id="smsg">${items.length} beg dalam kedai</span><button class="btn" id="bSave">Simpan harga</button></div>`;
+  drawList();
+  $('#q').oninput = e => { Q = e.target.value; drawList(); };
+  $('#kedai').oninput = () => { DIRTY = true; };
+  $('#bApply').onclick = () => { const t = parseFloat($('#tambah').value); if (!(t >= 0)) return toast('Masukkan jumlah, cth 20'); P.items.forEach(x => x.harga = Math.round((x.asas + t)*100)/100); DIRTY = true; drawList(); toast('Harga dikemaskini. Tekan Simpan.'); };
+  $('#bReset').onclick = () => { P.items.forEach(x => x.harga = 0); DIRTY = true; drawList(); };
+  $('#bSave').onclick = simpan;
+}
+function drawList(){
+  const q = Q.toLowerCase().trim();
+  const list = P.items.filter(x => !q || (x.kod + ' ' + x.brand + ' ' + x.details).toLowerCase().includes(q));
+  $('#list').innerHTML = list.map(x => `<div class="card it">
+    ${x.gambar ? `<img src="${esc(x.gambar.replace('=w1000','=w200'))}" alt="" loading="lazy">` : '<span class="ni"></span>'}
+    <div class="tx"><b>${esc(x.brand)}</b><span>${esc(x.details)}</span><em>${esc(x.kod)} · Lilybelle ${rm(x.asas)}${x.status !== 'AVAILABLE' ? ' · ditempah' : x.qty > 1 ? ' · ' + x.qty + ' unit' : ''}</em></div>
+    <div class="pr"><label><input inputmode="decimal" data-k="${esc(x.kod)}" value="${x.harga || ''}" placeholder="${x.asas}"></label><small data-u="${esc(x.kod)}">${untung(x)}</small></div>
+  </div>`).join('') || '<div class="card empty">Tiada beg dijumpai.</div>';
+  document.querySelectorAll('[data-k]').forEach(i => i.oninput = () => {
+    const x = P.items.find(y => y.kod === i.dataset.k); x.harga = parseFloat(i.value) || 0; DIRTY = true;
+    document.querySelector(`[data-u="${x.kod}"]`).outerHTML = `<small data-u="${esc(x.kod)}">${untung(x)}</small>`;
+  });
+}
+const untung = x => { if (!x.harga) return '<span class="mut">harga Lilybelle</span>'; const u = x.harga - x.asas; return `<span class="${u >= 0 ? 'pos' : 'neg'}">${u >= 0 ? 'Untung ' : 'Rugi '}${rm(Math.abs(u))}</span>`; };
+async function simpan(){
+  const b = $('#bSave'); b.disabled = true; b.textContent = 'Menyimpan…';
+  const harga = {}; P.items.forEach(x => { if (x.harga > 0) harga[x.kod] = x.harga; });
+  try {
+    const r = await api({ aksi:'simpan', token: TOK, kedai: $('#kedai').value, harga });
+    if (!r.ok) throw new Error(r.error);
+    P = Object.assign(P, r); DIRTY = false; toast('Harga disimpan. Kedai anda dah dikemaskini 🎀'); shell();
+  } catch(e){ if (e.message !== 'SESI_TAMAT') { toast(e.message || 'Gagal simpan. Cuba lagi.'); b.disabled = false; b.textContent = 'Simpan harga'; } }
+}
+
+/* Jualan */
+function pJualan(){
+  const J = P.jualan, sold = J.filter(o => o.status === 'SOLD'), tunggu = J.filter(o => o.status === 'MENUNGGU RESIT');
+  const kom = sold.reduce((a, o) => a + o.komisen, 0);
+  const pill = s => s === 'SOLD' ? '<span class="pill ok">SELESAI</span>' : s === 'MENUNGGU RESIT' ? '<span class="pill">MENUNGGU BAYARAN</span>' : '<span class="pill bad">BATAL</span>';
+  const tk = iso => { if (!iso) return ''; const d = new Date(iso); return d.getDate() + '/' + (d.getMonth()+1) + '/' + d.getFullYear(); };
+  $('#page').innerHTML = `
+  <div class="stats"><div><small>Terjual</small><b>${sold.reduce((a,o)=>a+o.qty,0)}</b></div><div><small>Menunggu</small><b>${tunggu.length}</b></div><div><small>Komisen</small><b class="${kom<0?'neg':'pos'}">${rm(kom)}</b></div></div>
+  <div class="card">${J.map(o => `<div class="od"><div style="min-width:0"><b>${esc(o.beg)}</b><span>${tk(o.tarikh)} · ${esc(o.nama)}${o.qty>1?' · '+o.qty+' unit':''} · ${rm(o.harga*o.qty)}</span></div><div style="text-align:right;flex:none">${pill(o.status)}<div style="font-size:12px;font-weight:800;margin-top:4px" class="${o.komisen<0?'neg':'pos'}">${rm(o.komisen)}</div></div></div>`).join('') || '<div class="empty">Belum ada tempahan melalui kedai anda. Kongsi link kedai untuk mula menjual! 🎀</div>'}</div>
+  <p class="note" style="margin:10px 2px 24px">Komisen dikira bila tempahan selesai (customer dah bayar). Tempahan yang batal tidak dikira.</p>`;
+}
+
+/* Akaun */
+function pAkaun(){
+  $('#page').innerHTML = `<div class="card panel"><h2>Tukar kata laluan</h2><form id="kf" style="display:grid;gap:10px" novalidate>
+    <label class="fl">Kata laluan sekarang<input type="password" name="lama" autocomplete="current-password"></label>
+    <label class="fl">Kata laluan baru<input type="password" name="baru" autocomplete="new-password"></label>
+    <label class="fl">Ulang kata laluan baru<input type="password" name="baru2" autocomplete="new-password"></label>
+    <div class="err" id="kerr" hidden></div><button class="btn">Tukar kata laluan</button></form></div>`;
+  const f = $('#kf');
+  f.onsubmit = async e => {
+    e.preventDefault(); const er = $('#kerr'); er.hidden = true;
+    if (f.baru.value !== f.baru2.value) { er.textContent = 'Kata laluan baru tidak sama.'; er.hidden = false; return; }
+    try { const r = await api({ aksi:'kata', token: TOK, lama: f.lama.value, baru: f.baru.value }); if (!r.ok) throw new Error(r.error); f.reset(); toast('Kata laluan ditukar'); }
+    catch(e2){ if (e2.message !== 'SESI_TAMAT') { er.textContent = e2.message || 'Gagal.'; er.hidden = false; } }
+  };
+}
+window.addEventListener('beforeunload', e => { if (DIRTY) { e.preventDefault(); e.returnValue = ''; } });
+boot();
+</script>
+</body>
+</html>
