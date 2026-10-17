@@ -573,7 +573,8 @@ function share(x){
 function shareShop(){
   const n = DATA ? DATA.items.filter(i => i.status === 'AVAILABLE').length : 0;
   const ada = DATA ? DATA.items.filter(i => i.status === 'AVAILABLE') : [], dari = ada.length ? Math.min(...ada.map(i => i.harga)) : 0;
-  const text = `🎀 ${SKINS[skin].plain} — beg idaman untuk wanita moden ✨${n ? `\n👜 ${n} beg tersedia${dari ? `, dari RM${rm(dari)}` : ''}` : ''}\n💕 Tengok koleksi & tempah terus di sini:`;
+  const M = DATA && DATA.kongsi && DATA.kongsi.mesej;   // mesej boleh diubah di admin → Tetapan
+  const text = M ? M.replace(/\{bil\}/g, n).replace(/\{dari\}/g, rm(dari)) : `🎀 ${SKINS[skin].plain} — beg idaman untuk wanita moden ✨${n ? `\n👜 ${n} beg tersedia${dari ? `, dari RM${rm(dari)}` : ''}` : ''}\n💕 Tengok koleksi & tempah terus di sini:`;
   kongsi('KONGSI KEDAI', SITE, text, `<img src="${SITE}og.jpg" alt=""><div><b>${esc(SKINS[skin].plain)}</b><span>${n ? n + ' beg tersedia · ' : ''}Kongsi dengan kawan</span></div>`);
 }
 function kongsi(tajuk, url, text, prev){
