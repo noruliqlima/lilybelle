@@ -59,6 +59,7 @@
 @media (prefers-color-scheme: dark){:root:not([data-theme="light"]){--grad:linear-gradient(120deg,#4A2C96 0%,#6E3492 50%,#A8466F 100%)}}
 .top{background:var(--grad);border-radius:0 0 24px 24px;padding-bottom:14px;margin-top:-1px;box-shadow:0 10px 30px -12px rgba(123,85,211,.55)}
 header.lbh{background:var(--grad)!important;backdrop-filter:none;-webkit-backdrop-filter:none;border-bottom:0!important}
+   .agbar{display:flex;justify-content:center;margin:2px 0 12px}.agbar span{display:inline-flex;align-items:center;gap:6px;max-width:100%;color:#fff;font-size:12.5px;font-weight:700;background:rgba(255,255,255,.16);border:1px solid rgba(255,255,255,.32);padding:6px 14px;border-radius:999px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 header.lbh.scrolled{box-shadow:0 6px 18px -8px rgba(60,20,120,.5)}
 .lbh .name{color:#fff}
 :root[data-d="c"] .lbh .mark{background:#fff;color:#7B55D3}
@@ -396,6 +397,7 @@ footer{padding-block:20px 110px;color:var(--ink3);font-size:12.5px;text-align:ce
 </header>
 <div class="top" id="top">
 <div class="wrap">
+  <div class="agbar" id="agbar" hidden><span id="agname"></span></div>
   <div class="kpi">
     <div><b id="sAvail">–</b><span>beg tersedia</span></div>
     <div><b id="sFrom">–</b><span>harga bermula</span></div>
@@ -463,6 +465,9 @@ footer{padding-block:20px 110px;color:var(--ink3);font-size:12.5px;text-align:ce
 const PREVIEW = false;
 const API = 'https://script.google.com/macros/s/AKfycbwgpMyz8qWkFbWtS19gvF9IcviGVTgKMSJ4eUxU5AJ-lTdFg9UQSjapGrlKaMkExQHq/exec';
 const SITE = 'https://lilybelle.vercel.app/';
+// Kedai agent: ?ag=id (harga ikut agent; tempahan & bayaran tetap ke Lilybelle)
+const AG = (() => { try { const v = (new URLSearchParams(location.search).get('ag') || '').toLowerCase(); return /^[a-z0-9]{3,20}$/.test(v) ? v : ''; } catch(e){ return ''; } })();
+const HOME = SITE + (AG ? '?ag=' + AG : '');
 const WA = '60164224090';
 const SKINS = {
   a: { name:'Mawar <em>Atelier</em>', plain:'Mawar Atelier', mark:'M', eyebrow:'Baru & Bundle · Stok Terhad',
@@ -501,7 +506,7 @@ function applySkin(d){
 
 async function load(){
   if (INLINE) { DATA = INLINE; render(); return; }
-  try { const r = await fetch(API + '?a=list&t=' + Date.now()); const d = await r.json(); if (!d.ok) throw 0; DATA = d; render(); openFromHash(); try { if (d.noAkaun) $('#safeAcc').textContent = d.bank + ' ' + d.noAkaun + ' (' + d.namaAkaun + ')'; } catch(e){} }
+  try { const r = await fetch(API + '?a=list' + (AG ? '&ag=' + AG : '') + '&t=' + Date.now()); const d = await r.json(); if (!d.ok) throw 0; DATA = d; if (d.agent) { $('#agname').textContent = '🛍️ ' + d.agent.kedai + ' · Agent rasmi Lilybelle'; $('#agbar').hidden = false; } render(); openFromHash(); try { if (d.noAkaun) $('#safeAcc').textContent = d.bank + ' ' + d.noAkaun + ' (' + d.namaAkaun + ')'; } catch(e){} }
   catch(e){ $('#grid').innerHTML = '<p style="grid-column:1/-1;text-align:center;padding:40px;color:var(--ink2)">Tak dapat muat stok. Sila cuba semula atau WhatsApp kami.</p>'; }
 }
 
@@ -563,7 +568,7 @@ function openSheet(title, html, cls=''){
 }
 function closeSheet(){ ov.classList.remove('show'); setTimeout(() => ov.hidden = true, 200); document.body.style.overflow = ''; if (location.hash) history.replaceState(null,'',location.pathname+location.search); }
 const find = k => (DATA.items||[]).find(i => i.kod === k);
-const linkOf = x => SITE + 'p/' + x.kod + '.html';  // halaman kongsi: WhatsApp tunjuk gambar & harga beg
+const linkOf = x => AG ? HOME + '#' + x.kod : SITE + 'p/' + x.kod + '.html';  // halaman kongsi: WhatsApp tunjuk gambar & harga beg
 
 function share(x){
   const url = linkOf(x), text = `👜 ${x.brand} — ${x.details} · RM${rm(x.harga)} 🎀`;
@@ -575,7 +580,7 @@ function shareShop(){
   const ada = DATA ? DATA.items.filter(i => i.status === 'AVAILABLE') : [], dari = ada.length ? Math.min(...ada.map(i => i.harga)) : 0;
   const M = DATA && DATA.kongsi && DATA.kongsi.mesej;   // mesej boleh diubah di admin → Tetapan
   const text = M ? M.replace(/\{bil\}/g, n).replace(/\{dari\}/g, rm(dari)) : `🎀 ${SKINS[skin].plain} — beg idaman untuk wanita moden ✨${n ? `\n👜 ${n} beg tersedia${dari ? `, dari RM${rm(dari)}` : ''}` : ''}\n💕 Tengok koleksi & tempah terus di sini:`;
-  kongsi('KONGSI KEDAI', SITE, text, `<img src="${SITE}og.jpg" alt=""><div><b>${esc(SKINS[skin].plain)}</b><span>${n ? n + ' beg tersedia · ' : ''}Kongsi dengan kawan</span></div>`);
+  kongsi('KONGSI KEDAI', HOME, text, `<img src="${SITE}og.jpg" alt=""><div><b>${esc(SKINS[skin].plain)}</b><span>${n ? n + ' beg tersedia · ' : ''}Kongsi dengan kawan</span></div>`);
 }
 function kongsi(tajuk, url, text, prev){
   if (!PREVIEW && navigator.share) { navigator.share({title:SKINS[skin].plain, text, url}).catch(()=>{}); return; }
@@ -637,7 +642,7 @@ function showForm(x){
   f.querySelectorAll('[name=kaedah]').forEach(r => r.onchange = sync);
   f.onsubmit = async e => {
     e.preventDefault();
-    const d = Object.fromEntries(new FormData(f)); d.kod = x.kod; d.kuantiti = kq;
+    const d = Object.fromEntries(new FormData(f)); d.kod = x.kod; d.kuantiti = kq; if (AG) d.ag = AG;
     const err = m => { const el = $('#err'); el.textContent = m; el.hidden = !m; };
     if (d.nama.trim().length < 2) return err('Sila isi nama penuh.');
     if (!/^\+?\d{9,14}$/.test(d.telefon.replace(/[\s-]/g,''))) return err('Sila isi no. telefon yang betul, cth 0123456789.');
@@ -738,7 +743,7 @@ function doAct(a){
   else if (a.startsWith('c:')) { cat = a.slice(2); flt = ''; render(); goGrid(); }
   else if (a === 'grid') goGrid();
   else if (a === 'how') document.querySelector('.how').scrollIntoView({behavior:'smooth'});
-  else if (a === 'share') { const url = SITE, text = 'Lilybelle · Beg & jam pilihan, satu unit sahaja setiap satu'; if (navigator.share) navigator.share({title:'Lilybelle', text, url}).catch(()=>{}); else { try { navigator.clipboard.writeText(url); toast('Link kedai disalin'); } catch(e){ toast(url); } } }
+  else if (a === 'share') { const url = HOME, text = 'Lilybelle · Beg & jam pilihan, satu unit sahaja setiap satu'; if (navigator.share) navigator.share({title:'Lilybelle', text, url}).catch(()=>{}); else { try { navigator.clipboard.writeText(url); toast('Link kedai disalin'); } catch(e){ toast(url); } } }
 }
 $('#quick').addEventListener('click', e => { const b = e.target.closest('.qi'); if (b) doAct(b.dataset.q); });
 $('#bslides').addEventListener('click', e => { const b = e.target.closest('[data-b]'); if (!b) return; const v = b.dataset.b; doAct(v === 'baru' || v === 'sale' ? 'f:' + v : v); });
